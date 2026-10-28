@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Campus Growth Engine</title>
+<meta name="description" content="Ambassador referral tracking, verified registrations, milestone notifications and an Agile daily review for a 7-day, 500-registration campus campaign.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F3F6FB; --panel: #FFFFFF; --ink: #15213A; --muted: #5B6A82; --line: #DFE6F1;
+  --navy: #13294B; --navy-2: #1E3F73; --teal: #0E9C93; --teal-soft: #DDF4F1; --sky: #E7F0FB;
+  --amber: #B7791F; --amber-soft: #FDF1DC; --red: #C53B3B; --red-soft: #FBE5E5; --green: #1C8A5E; --green-soft: #DFF3EA;
+  --side-ink: #DCE6F5; --side-muted: #93A6C6;
+  --font: "Manrope", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: "JetBrains Mono", Consolas, "Courier New", monospace;
+  color-scheme: light; box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1626; --panel: #16223A; --ink: #E7EDF7; --muted: #9AABC6; --line: #273754;
+    --navy: #0A1530; --navy-2: #2B5597; --teal: #3CCFC4; --teal-soft: #123A3A; --sky: #18294A;
+    --amber: #F0B95A; --amber-soft: #3A2E14; --red: #F08080; --red-soft: #3D1F25; --green: #5CD6A0; --green-soft: #143528;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1626; --panel: #16223A; --ink: #E7EDF7; --muted: #9AABC6; --line: #273754;
+  --navy: #0A1530; --navy-2: #2B5597; --teal: #3CCFC4; --teal-soft: #123A3A; --sky: #18294A;
+  --amber: #F0B95A; --amber-soft: #3A2E14; --red: #F08080; --red-soft: #3D1F25; --green: #5CD6A0; --green-soft: #143528;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font: inherit; color: inherit; }
+a { color: var(--teal); }
+:focus-visible { outline: 3px solid var(--teal); outline-offset: 2px; border-radius: 6px; }
+h1, h2, h3 { margin: 0; line-height: 1.15; letter-spacing: -0.015em; }
+h1 { font-size: 1.6rem; font-weight: 800; }
+h2 { font-size: 1.05rem; font-weight: 800; }
+p { margin: 0; }
+.muted { color: var(--muted); } .small { font-size: .84rem; }
+.mono { font-family: var(--mono); font-size: .86em; }
+.hidden { display: none !important; }
+
+/* shell */
+.shell { display: grid; grid-template-columns: 236px 1fr; min-height: 100vh; }
+aside.side { background: var(--navy); color: var(--side-ink); padding: 22px 14px; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 4px; }
+.logo { display: flex; gap: 10px; align-items: center; padding: 0 8px 18px; }
+.logo-mark { width: 34px; height: 34px; border-radius: 10px; background: var(--teal); display: grid; place-items: center; color: #fff; font-weight: 800; }
+.logo b { display: block; color: #fff; font-size: .98rem; line-height: 1.15; }
+.logo span { font-size: .74rem; color: var(--side-muted); }
+.side a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: var(--side-ink); text-decoration: none; font-weight: 600; font-size: .92rem; }
+.side a:hover { background: rgba(255,255,255,.06); }
+.side a[aria-current="page"] { background: var(--navy-2); color: #fff; }
+.side a .ic { width: 20px; text-align: center; }
+.side .grow { flex: 1; }
+.side .campus { font-size: .78rem; color: var(--side-muted); padding: 10px 12px; border-top: 1px solid rgba(255,255,255,.08); }
+.side .campus b { color: #fff; display: block; font-size: .86rem; }
+main { padding: 26px 30px 60px; min-width: 0; }
+.head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+.head .sub { margin-top: 4px; }
+.daybadge { display: inline-flex; gap: 8px; align-items: center; padding: 8px 12px; border-radius: 10px; background: var(--panel); border: 1px solid var(--line); font-weight: 700; font-size: .86rem; }
+.daybadge i { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); display: inline-block; }
+.view { display: none; } .view.on { display: block; }
+
+/* mobile */
+.mtop { display: none; }
+@media (max-width: 860px) {
+  .shell { grid-template-columns: 1fr; }
+  aside.side { display: none; }
+  .mtop { display: flex; position: sticky; top: 0; z-index: 20; background: var(--navy); color: #fff; padding: 10px 12px; gap: 10px; align-items: center; overflow-x: auto; }
+  .mtop .logo-mark { width: 30px; height: 30px; flex: none; }
+  .mtop a { flex: none; color: var(--side-ink); text-decoration: none; font-weight: 700; font-size: .82rem; padding: 7px 10px; border-radius: 8px; white-space: nowrap; }
+  .mtop a[aria-current="page"] { background: var(--navy-2); color: #fff; }
+  main { padding: 18px 14px 50px; }
+}
+
+/* panels & grid */
+.grid { display: grid; gap: 14px; }
+.kpis { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 1000px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+.cols-2 { grid-template-columns: 1.4fr 1fr; }
+.cols-3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 1000px) { .cols-2, .cols-3 { grid-template-columns: 1fr; } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; min-width: 0; }
+.panel > h2 { margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.kpi { padding: 16px 18px; }
+.kpi .label { font-size: .8rem; font-weight: 700; color: var(--muted); }
+.kpi .val { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; margin-top: 2px; }
+.kpi .val small { font-size: .95rem; color: var(--muted); font-weight: 700; }
+.kpi .foot { font-size: .8rem; margin-top: 2px; }
+.up { color: var(--green); } .down { color: var(--red); }
+.track { height: 10px; border-radius: 6px; background: var(--sky); overflow: hidden; position: relative; }
+.track > i { display: block; height: 100%; background: var(--teal); border-radius: 6px; }
+.track .marker { position: absolute; top: -3px; width: 2px; height: 16px; background: var(--navy-2); }
+.amb-row { display: grid; grid-template-columns: 140px 1fr 90px; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.amb-row:last-child { border-bottom: 0; }
+.amb-row b { display: block; font-size: .92rem; }
+.amb-row .num { text-align: right; font-weight: 800; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.chip { font-size: .72rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: var(--sky); color: var(--muted); }
+.chip.hit { background: var(--teal-soft); color: var(--teal); }
+.tag { font-size: .72rem; font-weight: 800; padding: 3px 9px; border-radius: 999px; white-space: nowrap; display: inline-block; }
+.t-ok { background: var(--green-soft); color: var(--green); } .t-warn { background: var(--amber-soft); color: var(--amber); }
+.t-bad { background: var(--red-soft); color: var(--red); } .t-info { background: var(--sky); color: var(--navy-2); }
+:root[data-theme="dark"] .t-info, .t-info { color: var(--ink); }
+.btn { border: 0; cursor: pointer; border-radius: 10px; padding: 10px 14px; font-weight: 700; display: inline-flex; gap: 6px; align-items: center; justify-content: center; text-decoration: none; min-height: 40px; }
+.btn-primary { background: var(--teal); color: #fff; }
+.btn-dark { background: var(--navy-2); color: #fff; }
+.btn-line { background: transparent; border: 1px solid var(--line); color: var(--ink); }
+.btn-sm { min-height: 32px; padding: 5px 10px; font-size: .8rem; border-radius: 8px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.alert { padding: 12px 14px; border-radius: 10px; font-weight: 600; font-size: .9rem; margin-bottom: 14px; }
+.a-ok { background: var(--green-soft); color: var(--green); } .a-warn { background: var(--amber-soft); color: var(--amber); }
+
+/* tables */
+.scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: .88rem; min-width: 560px; }
+th { text-align: left; font-size: .76rem; color: var(--muted); font-weight: 800; padding: 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+td.r, th.r { text-align: right; }
+.toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.toolbar input, .toolbar select, .field input, .field select, .field textarea { border: 1px solid var(--line); background: var(--bg); border-radius: 9px; padding: 9px 11px; min-height: 40px; }
+.toolbar input { flex: 1; min-width: 180px; }
+
+/* ambassador cards */
+.acard { border-radius: 14px; border: 1px solid var(--line); background: var(--panel); padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+.acard .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.acard .slot { font-size: .76rem; font-weight: 800; color: var(--teal); }
+.acard h3 { font-size: 1.2rem; font-weight: 800; }
+.acard .big { font-size: 1.8rem; font-weight: 800; }
+.acard .big small { font-size: .9rem; color: var(--muted); }
+.linkline { display: flex; gap: 6px; align-items: center; background: var(--bg); border: 1px dashed var(--line); border-radius: 9px; padding: 6px 6px 6px 10px; }
+.linkline span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .8rem; }
+.stats3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
+.stats3 div { background: var(--bg); border-radius: 9px; padding: 8px 4px; }
+.stats3 b { display: block; font-size: 1.05rem; }
+.stats3 span { font-size: .72rem; color: var(--muted); font-weight: 700; }
+.field { display: grid; gap: 4px; margin-top: 10px; }
+.field label { font-size: .8rem; font-weight: 800; color: var(--muted); }
+.err { color: var(--red); font-size: .84rem; font-weight: 600; margin-top: 8px; }
+
+/* whatsapp outbox */
+.outbox { display: grid; gap: 10px; }
+.msg { display: grid; grid-template-columns: 38px 1fr; gap: 10px; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--panel); }
+.msg .av { width: 38px; height: 38px; border-radius: 50%; background: #25D366; color: #08311A; display: grid; place-items: center; font-weight: 800; font-size: .8rem; }
+.msg .meta { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: .78rem; color: var(--muted); }
+.msg .meta b { color: var(--ink); font-size: .86rem; }
+.clamp2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.msg .body { margin-top: 6px; background: #DCF8C6; color: #10261A; padding: 9px 12px; border-radius: 4px 12px 12px 12px; font-size: .9rem; white-space: pre-wrap; }
+:root[data-theme="dark"] .clamp2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.msg .body { background: #1F4D3F; color: #E5F7EE; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .clamp2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.msg .body { background: #1F4D3F; color: #E5F7EE; } }
+
+/* agile */
+.days { display: grid; grid-template-columns: repeat(7, minmax(150px, 1fr)); gap: 10px; overflow-x: auto; padding-bottom: 6px; }
+.day { border-radius: 12px; border: 1px solid var(--line); background: var(--panel); padding: 12px; font-size: .84rem; min-width: 150px; display: flex; flex-direction: column; justify-content: flex-start; color: var(--ink); }
+.day .nums { margin-top: auto !important; padding-top: 8px; }
+.day.today { border: 2px solid var(--teal); }
+.day.future { opacity: .7; }
+.day .dn { font-weight: 800; font-size: .78rem; color: var(--muted); }
+.day .focus { font-weight: 800; margin: 4px 0 8px; }
+.day .nums { display: flex; justify-content: space-between; font-size: .78rem; margin-top: 8px; }
+.loop { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+@media (max-width: 1000px) { .loop { grid-template-columns: 1fr 1fr; } }
+.loop .step { border-radius: 12px; padding: 12px; }
+.loop .step b { display: block; font-size: .8rem; letter-spacing: .02em; }
+.loop textarea { width: 100%; margin-top: 8px; min-height: 118px; border-radius: 9px; border: 1px solid rgba(0,0,0,.08); background: rgba(255,255,255,.7); padding: 8px; resize: vertical; color: #15213A; }
+.insight { margin-top: 12px; padding: 12px 14px; border-radius: 10px; background: var(--sky); font-size: .9rem; }
+.insight li + li { margin-top: 4px; }
+
+/* quality */
+.pipe { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+@media (max-width: 1000px) { .pipe { grid-template-columns: repeat(2, 1fr); } }
+.pipe div { border-radius: 10px; padding: 10px; font-size: .8rem; background: var(--sky); }
+.pipe b { display: block; font-size: .84rem; }
+.pipe .done { background: var(--teal-soft); }
+.checks { list-style: none; margin: 0; padding: 0; }
+.checks li { display: grid; grid-template-columns: 26px 1fr auto; gap: 8px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: .88rem; align-items: center; }
+.checks li:last-child { border-bottom: 0; }
+
+/* student join page */
+.join { min-height: 100vh; display: grid; place-items: center; padding: 24px 16px; background: linear-gradient(160deg, var(--navy) 0 38%, var(--bg) 38%); }
+.join-card { width: 100%; max-width: 460px; background: var(--panel); border-radius: 18px; padding: 24px; border: 1px solid var(--line); }
+.join-hero { color: #fff; max-width: 460px; width: 100%; margin-bottom: 16px; }
+.join-hero h1 { font-size: 1.9rem; }
+.join-hero p { color: #C9D6EC; margin-top: 6px; }
+.ref { display: flex; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 10px; background: var(--teal-soft); color: var(--teal); font-weight: 700; font-size: .9rem; }
+.done-box { text-align: center; padding: 10px 0; }
+.done-box .tick { width: 56px; height: 56px; border-radius: 50%; background: var(--green-soft); color: var(--green); display: grid; place-items: center; font-size: 1.6rem; margin: 0 auto 10px; }
+.toast { position: fixed; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); left: 50%; transform: translateX(-50%); background: var(--navy-2); color: #fff; padding: 10px 16px; border-radius: 10px; font-weight: 600; z-index: 50; font-size: .9rem; max-width: 90vw; }
+.demo { font-size: .66rem; font-weight: 800; padding: 1px 6px; border-radius: 6px; background: var(--amber-soft); color: var(--amber); margin-left: 6px; vertical-align: middle; }
+svg text { font-family: var(--font); }
+</style>
+</head>
+<body>
+
+<!-- ============ STUDENT JOIN PAGE (opened from an ambassador's link) ============ -->
+<div class="join hidden" id="joinPage">
+  <div>
+    <div class="join-hero">
+      <h1>Build Your First AI Project in 60 Minutes</h1>
+      <p>A free online workshop by NxtWave for final-year engineering students. Any branch, no AI background needed.</p>
+    </div>
+    <div class="join-card">
+      <div id="joinForm">
+        <div class="ref hidden" id="joinRef"></div>
+        <form id="jf" novalidate>
+          <div class="field"><label for="jName">Full name</label><input id="jName" autocomplete="name" maxlength="50"></div>
+          <div class="field"><label for="jPhone">WhatsApp number</label><input id="jPhone" inputmode="tel" autocomplete="tel" placeholder="10-digit mobile number" maxlength="16"></div>
+          <div class="field"><label for="jBranch">Branch</label>
+            <select id="jBranch"><option value="">Choose your branch</option><option>CSE</option><option>IT</option><option>AI &amp; ML</option><option>ECE</option><option>EEE</option><option>Civil</option><option>Mechanical</option><option>Other</option></select></div>
+          <label class="small" style="display:flex;gap:8px;align-items:center;margin-top:12px"><input type="checkbox" id="jFinal"> I’m a final-year B.Tech student</label>
+          <p class="err hidden" id="jErr" role="alert"></p>
+          <button class="btn btn-primary" type="submit" style="width:100%;margin-top:14px">Register free</button>
+          <p class="small muted" style="margin-top:10px">Your number is used only to send the joining link on WhatsApp.</p>
+        </form>
+      </div>
+      <div id="joinDone" class="hidden done-box">
+        <div class="tick" aria-hidden="true">✓</div>
+        <h2>You’re registered!</h2>
+        <p class="muted" style="margin-top:6px">The joining link will come on WhatsApp.</p>
+        <button class="btn btn-line" id="joinAgain" type="button" style="margin-top:14px">Register another student (demo)</button>
+      </div>
+      <p class="small" style="margin-top:14px;text-align:center"><a href="#overview" id="backToApp">Organiser view</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ORGANISER CONSOLE ============ -->
+<div class="shell" id="console">
+  <aside class="side" aria-label="Main">
+    <div class="logo"><span class="logo-mark">GE</span><div><b>Campus Growth Engine</b><span>500 registrations · 7 days</span></div></div>
+    <a href="#overview" data-v="overview"><span class="ic">◧</span>Overview</a>
+    <a href="#ambassadors" data-v="ambassadors"><span class="ic">◎</span>Ambassadors</a>
+    <a href="#registrations" data-v="registrations"><span class="ic">☰</span>Registrations</a>
+    <a href="#whatsapp" data-v="whatsapp"><span class="ic">✉</span>WhatsApp log</a>
+    <a href="#agile" data-v="agile"><span class="ic">↻</span>Agile review</a>
+    <a href="#rewards" data-v="rewards"><span class="ic">₹</span>Rewards &amp; budget</a>
+    <a href="#quality" data-v="quality"><span class="ic">✓</span>Quality &amp; CI/CD</a>
+    <span class="grow"></span>
+    <div class="campus"><b id="campusName">Your Campus</b><span>Pilot campus · <a href="#settings" style="color:var(--side-ink);padding:0;display:inline">Settings</a></span></div>
+  </aside>
+
+  <nav class="mtop" aria-label="Main">
+    <span class="logo-mark">GE</span>
+    <a href="#overview" data-v="overview">Overview</a>
+    <a href="#ambassadors" data-v="ambassadors">Ambassadors</a>
+    <a href="#registrations" data-v="registrations">Registrations</a>
+    <a href="#whatsapp" data-v="whatsapp">WhatsApp</a>
+    <a href="#agile" data-v="agile">Agile</a>
+    <a href="#rewards" data-v="rewards">Rewards</a>
+    <a href="#quality" data-v="quality">Quality</a>
+    <a href="#settings" data-v="settings">Settings</a>
+  </nav>
+
+  <main>
+    <!-- OVERVIEW -->
+    <section class="view" id="v-overview" aria-labelledby="h-ov">
+      <div class="head">
+        <div><h1 id="h-ov">Campaign overview</h1><p class="sub muted">Verified registrations only: unique WhatsApp numbers from final-year students.</p></div>
+        <span class="daybadge"><i></i><span id="dayBadge">Day –</span></span>
+      </div>
+      <div id="paceAlert"></div>
+      <div class="grid kpis">
+        <div class="panel kpi"><div class="label">Verified registrations</div><div class="val"><span id="kVer">0</span> <small>/ 500</small></div><div class="track" style="margin-top:8px"><i id="kVerBar"></i></div></div>
+        <div class="panel kpi"><div class="label">Conversion rate</div><div class="val" id="kConv">0%</div><div class="foot muted">Link opens → verified · target 25%</div></div>
+        <div class="panel kpi"><div class="label">Vs plan today</div><div class="val" id="kPace">0</div><div class="foot muted" id="kPaceFoot">planned by end of today</div></div>
+        <div class="panel kpi"><div class="label">Rewards earned</div><div class="val" id="kRew">₹0</div><div class="foot muted">of ₹1,600 reward pool (₹400 reserve)</div></div>
+      </div>
+      <div class="grid cols-2" style="margin-top:14px">
+        <div class="panel">
+          <h2>Daily progress vs plan</h2>
+          <div class="scroll"><svg id="paceChart" viewBox="0 0 640 260" width="100%" role="img" aria-label="Cumulative registrations versus plan, day 1 to 7"></svg></div>
+        </div>
+        <div class="panel">
+          <h2>Ambassadors</h2>
+          <div id="ovAmb"></div>
+          <p class="small muted" style="margin-top:10px">The dark marker shows where each ambassador should be today.</p>
+        </div>
+      </div>
+      <div class="grid cols-3" style="margin-top:14px">
+        <div class="panel"><h2>Source of registrations</h2><div id="ovSrc"></div></div>
+        <div class="panel"><h2>By branch</h2><div id="ovBranch"></div></div>
+        <div class="panel"><h2>Latest WhatsApp messages</h2><div id="ovMsgs" class="small"></div><a href="#whatsapp" class="small">Open the full log</a></div>
+      </div>
+    </section>
+
+    <!-- AMBASSADORS -->
+    <section class="view" id="v-ambassadors" aria-labelledby="h-amb">
+      <div class="head"><div><h1 id="h-amb">Ambassadors</h1><p class="sub muted">Three ambassadors, three targets: 250 · 150 · 100.</p></div></div>
+      <div class="grid cols-3" id="ambCards"></div>
+    </section>
+
+    <!-- REGISTRATIONS -->
+    <section class="view" id="v-registrations" aria-labelledby="h-reg">
+      <div class="head"><div><h1 id="h-reg">Registrations</h1><p class="sub muted">Every sign-up has one primary source. Duplicates and incomplete entries are not counted.</p></div>
+        <a class="btn btn-primary" id="openJoin" href="#join">Open the student sign-up page</a></div>
+      <div class="panel">
+        <div class="toolbar">
+          <input id="regSearch" placeholder="Search name or branch" aria-label="Search registrations">
+          <select id="regAmb" aria-label="Filter by source"><option value="">All sources</option></select>
+          <select id="regStatus" aria-label="Filter by status"><option value="">All statuses</option><option value="Verified">Verified</option><option value="Duplicate">Duplicate</option><option value="Incomplete">Incomplete</option></select>
+        </div>
+        <div class="scroll"><table id="regTable"></table></div>
+        <p class="small muted" id="regCount" style="margin-top:10px"></p>
+      </div>
+    </section>
+
+    <!-- WHATSAPP -->
+    <section class="view" id="v-whatsapp" aria-labelledby="h-wa">
+      <div class="head"><div><h1 id="h-wa">WhatsApp message log</h1><p class="sub muted">Messages the system sends automatically. Sending is simulated; a real launch uses the WhatsApp Business Platform.</p></div>
+        <select id="waFilter" aria-label="Filter by ambassador" class="btn btn-line"></select></div>
+      <div class="outbox" id="outbox"></div>
+    </section>
+
+    <!-- AGILE -->
+    <section class="view" id="v-agile" aria-labelledby="h-ag">
+      <div class="head"><div><h1 id="h-ag">Agile daily review</h1><p class="sub muted">Plan → Execute → Measure → Improve, every day. Better outcomes than a fixed plan.</p></div></div>
+      <div class="days" id="days"></div>
+      <div class="panel" style="margin-top:14px">
+        <h2><span id="standupTitle">Today’s stand-up</span><span class="small muted" id="savedNote"></span></h2>
+        <div class="loop">
+          <div class="step" style="background:#DCE7F7;color:#13294B"><b>PLAN</b><span class="small">Targets, owners, links and messages</span><textarea id="nPlan" aria-label="Plan notes"></textarea></div>
+          <div class="step" style="background:#D5ECF4;color:#0F3B57"><b>EXECUTE</b><span class="small">Where we shared and who we reached</span><textarea id="nExec" aria-label="Execute notes"></textarea></div>
+          <div class="step" style="background:#D3EFEA;color:#0B4A45"><b>MEASURE</b><span class="small">Filled in from today’s data</span><textarea id="nMeas" aria-label="Measure notes" readonly></textarea></div>
+          <div class="step" style="background:#E0F2E6;color:#14482F"><b>IMPROVE</b><span class="small">What we change tomorrow</span><textarea id="nImp" aria-label="Improve notes"></textarea></div>
+        </div>
+        <div class="insight" id="insight"></div>
+      </div>
+    </section>
+
+    <!-- REWARDS -->
+    <section class="view" id="v-rewards" aria-labelledby="h-rw">
+      <div class="head"><div><h1 id="h-rw">Rewards &amp; budget</h1><p class="sub muted">A reward is earned only when the full target is reached. Payments are simulated until an authorised payout service is connected.</p></div></div>
+      <div class="grid cols-2">
+        <div class="panel"><h2>Ambassador rewards</h2><div class="scroll"><table id="rwTable"></table></div></div>
+        <div class="panel">
+          <h2>₹2,000 budget</h2>
+          <svg id="budgetBar" viewBox="0 0 400 40" width="100%" aria-hidden="true"></svg>
+          <div id="budgetRows" style="margin-top:12px"></div>
+          <p class="small muted" style="margin-top:10px">Only UPI IDs are stored for payouts. The system never asks for a UPI PIN or OTP.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUALITY -->
+    <section class="view" id="v-quality" aria-labelledby="h-q">
+      <div class="head"><div><h1 id="h-q">Quality &amp; CI/CD</h1><p class="sub muted">The same rules this app uses are tested automatically on every push to GitHub.</p></div>
+        <a class="btn btn-dark" id="actionsLink" target="_blank" rel="noopener" href="#">View test runs on GitHub Actions</a></div>
+      <div class="panel">
+        <h2>Delivery pipeline</h2>
+        <div class="pipe">
+          <div class="done"><b>1 · Plan</b>Feature, e.g. milestone message</div>
+          <div class="done"><b>2 · Code</b>logic.js + app.js</div>
+          <div class="done"><b>3 · Version control</b>Commit and push to GitHub</div>
+          <div class="done"><b>4 · CI</b>GitHub Actions runs the tests</div>
+          <div class="done"><b>5 · Validate</b>Deploy only if all tests pass</div>
+          <div class="done"><b>6 · Deploy</b>GitHub Pages</div>
+          <div><b>7 · Monitor</b>Revert a bad commit to roll back</div>
+        </div>
+      </div>
+      <div class="grid cols-2" style="margin-top:14px">
+        <div class="panel"><h2>Live self-check in your browser <span id="selfScore" class="tag t-info"></span></h2><ul class="checks" id="checks"></ul></div>
+        <div class="panel">
+          <h2>What the automated tests verify</h2>
+          <ul class="checks">
+            <li><span>①</span><span><b>No duplicate counting</b><br><span class="small muted">The same number in any format counts once; the earliest sign-up keeps the credit.</span></span><span></span></li>
+            <li><span>②</span><span><b>Correct referral attribution</b><br><span class="small muted">Only real codes are credited; unknown codes count as direct.</span></span><span></span></li>
+            <li><span>③</span><span><b>Notifications only at milestones</b><br><span class="small muted">25%, 50%, 75% and 100% of each target, never twice.</span></span><span></span></li>
+            <li><span>④</span><span><b>Accurate rewards</b><br><span class="small muted">Paid only at the full target; approvals can’t pass the budget.</span></span><span></span></li>
+          </ul>
+          <p class="small muted" style="margin-top:10px">Tests: <span class="mono">tests/logic.test.js</span> · Workflow: <span class="mono">.github/workflows/ci.yml</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="view" id="v-settings" aria-labelledby="h-set">
+      <div class="head"><div><h1 id="h-set">Settings</h1><p class="sub muted">Data is stored in this browser only. Demo data is marked “demo”. “Start an empty campaign” removes everything so you can onboard ambassadors from zero.</p></div></div>
+      <div class="panel" style="max-width:520px">
+        <div class="field"><label for="sCampus">Pilot campus name</label><input id="sCampus" maxlength="60"></div>
+        <div class="field"><label for="sStart">Campaign Day 1 date</label><input id="sStart" type="date"></div>
+        <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+          <button class="btn btn-primary" id="sSave" type="button">Save</button>
+          <button class="btn btn-line" id="sReset" type="button">Reset demo data</button>
+          <button class="btn btn-line" id="sFresh" type="button">Start an empty campaign</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="logic.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

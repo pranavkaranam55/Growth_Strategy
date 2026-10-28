@@ -1,0 +1,10 @@
+{
+  "name": "campus-growth-engine",
+  "version": "1.0.0",
+  "description": "Ambassador referral tracking, verified registrations, milestone notifications and Agile review for a 7-day, 500-registration campus campaign.",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/logic.test.js"
+  },
+  "engines": { "node": ">=18" }
+}
